@@ -1,4 +1,3 @@
-// config/db.js
 // Responsible for connecting to MongoDB using Mongoose
 
 const mongoose = require('mongoose');
