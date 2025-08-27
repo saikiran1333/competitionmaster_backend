@@ -9,7 +9,8 @@ const getQuestions = async (req, res) => {
   try {
     // Fetch all questions from the database
     const questions = await Question.find();
-    res.status(200).json(questions);
+    // res.status(200).json(questions);
+    res.status(200).json(({message:"successfully get question",data:questions}))
   } catch (error) {
     res.status(500).json({ message: 'Error fetching questions', error });
   }
@@ -21,14 +22,16 @@ const getQuestions = async (req, res) => {
 const getQuestionById = async (req, res) => {
   try {
     // Find a question by its ID
-    const question = await Question.findById(req.params.id);
+    const questionById = await Question.findById(req.params.id);
     
     // If question not found, return 404 error
-    if (!question) {
-      return res.status(404).json({ message: 'Question not found' });
+    if (!questionById) {
+      return res.status(404).json({ message: 'Question Id not found' });
     }
     
-    res.status(200).json(question);
+    // res.status(200).json(question);
+        res.status(200).json(({message:"successfully get question Id",data:questionById}))
+
   } catch (error) {
     res.status(500).json({ message: 'Error fetching question', error });
   }
@@ -39,15 +42,37 @@ const getQuestionById = async (req, res) => {
 // @access  Public
 const createQuestion = async (req, res) => {
   try {
-    // Create a new question with data from the request body
-    const question = new Question(req.body);
+    // Explicitly pick fields from req.body
+    const question = new Question({
+      question: req.body.question,
+      options: req.body.options,   // must be an array of { text, isCorrect, selectedCount }
+      shares: req.body.shares,
+      comments: req.body.comments,
+      reshares: req.body.reshares,
+      likes: req.body.likes,
+      answered: req.body.answered,
+      selected: req.body.selected,
+      difficulty: req.body.difficulty,
+      reports: req.body.reports,
+      creator: req.body.creator,
+      explanation: req.body.explanation,
+    });
+
     // Save the question to the database
     const savedQuestion = await question.save();
-    res.status(201).json(savedQuestion);
+
+    res.status(201).json({
+      message: "Successfully created question",
+      data: savedQuestion,
+    });
   } catch (error) {
-    res.status(400).json({ message: 'Error creating question', error });
+    res.status(400).json({
+      message: "Error creating question",
+      error,
+    });
   }
 };
+
 
 // @desc    Update a question
 // @route   PUT /api/questions/:id
@@ -58,15 +83,16 @@ const updateQuestion = async (req, res) => {
     const updatedQuestion = await Question.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true, runValidators: true } // Return the updated document and run validation
+      { new: true } // Return the updated document and run validation
     );
     
     // If question not found, return 404 error
     if (!updatedQuestion) {
-      return res.status(404).json({ message: 'Question not found' });
+      return res.status(404).json({ message: 'Question Id not found' });
     }
     
-    res.status(200).json(updatedQuestion);
+    // res.status(200).json(updatedQuestion);
+    res.status(200).json({message:"successfully question updated", data:updateQuestion})
   } catch (error) {
     res.status(400).json({ message: 'Error updating question', error });
   }
@@ -85,7 +111,7 @@ const deleteQuestion = async (req, res) => {
       return res.status(404).json({ message: 'Question not found' });
     }
     
-    res.status(200).json({ message: 'Question deleted successfully' });
+    res.status(200).json({ message: 'Question deleted successfully',data:deleteQuestion });
   } catch (error) {
     res.status(500).json({ message: 'Error deleting question', error });
   }

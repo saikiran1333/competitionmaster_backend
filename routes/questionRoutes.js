@@ -20,7 +20,7 @@ router.get('/:id', getQuestionById);
 router.post('/', createQuestion);
 
 // PUT update a question
-router.put('/:id', updateQuestion);
+router.patch('/:id', updateQuestion);
 
 // DELETE a question
 router.delete('/:id', deleteQuestion);
