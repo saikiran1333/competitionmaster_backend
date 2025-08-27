@@ -92,7 +92,7 @@ const updateQuestion = async (req, res) => {
     }
     
     // res.status(200).json(updatedQuestion);
-    res.status(200).json({message:"successfully question updated", data:updateQuestion})
+    res.status(200).json({message:"successfully question updated", data:updatedQuestion})
   } catch (error) {
     res.status(400).json({ message: 'Error updating question', error });
   }
